@@ -1,5 +1,9 @@
+## Packer
 # Cache objects
-packer_cache/
-
+packer/packer_cache/
+# Output directories
+packer/output-*
 # For built boxes
 *.box
+## ISO images
+ISO/
