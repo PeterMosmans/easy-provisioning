@@ -5,6 +5,7 @@
     "guest_os_type": "Debian_64",
     "guest_additions_mode": "upload",
     "guest_additions_path": "VBoxGuestAdditions.iso",
+    "headless": true,
     "iso_urls": [
       "../ISO/kali-linux-2016.2-amd64.iso",
       "http://cdimage.kali.org/kali-2016.2/kali-linux-2016.2-amd64.iso"
