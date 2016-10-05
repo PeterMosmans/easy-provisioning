@@ -1,3 +1,6 @@
+## Ansible persistent storage
+ansible/hosts
+ansible/roles/*
 ## Packer
 # Cache objects
 packer/packer_cache/
@@ -5,7 +8,7 @@ packer/packer_cache/
 packer/output-*
 # For built boxes
 *.box
-## ISO images
+## Locally stored ISO images
 ISO
 ISO/*
 ## Vagrant
