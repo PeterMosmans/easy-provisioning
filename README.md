@@ -14,7 +14,7 @@ This mindset also helps when preparing for demo's and workshops: Usually I need 
 
 **Ansible** is a tool for managing systems and deploying applications, licensed under the GNU General Public License version 3 (my personal favorite).
 
-This repository contains (example) scripts to setup an Ansible server, a Kali Vagrantbox installation, and a demo environment for Pentext 
+This repository contains (example) scripts to setup an Ansible server, a Kali Vagrantbox installation, and a demo environment for Pentext.
 
 ### Prerequisites
 1. Make sure that the following tools are installed, up-to-date and can be executed from the command line.
@@ -35,11 +35,22 @@ This repository contains (example) scripts to setup an Ansible server, a Kali Va
 ### 1: Bootstrap an Ansible server
 End goal: a Vagrantbox containing Ansible, provisioned using Ansible.
 
+`cd vagrant/ansible-server && VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant up`
+
+This will spin up a Debian box named `bootstrap`, install Ansible on it, and provision it for use with VirtualBox.
+Use the following command to package it as a new Vagrantbox, and add it to the local catalog, ready to be used as ansible server:
+`vagrant package ansible-server --output ansible-server.box && vagrant box add ansible-server.box --name ansible-server`
+
+Now, you can spin up the Ansible server box anytime using the command
+`vagrant up` in the `vagrant/ansible-server` directory.
 
 ### 2: Install Kali Linux 2016.2 as a Vagrantbox
 End goal: a Vagrantbox containing Kali Linux 2016.2, provisioned using Ansible
 
+First, let Packer create an importable VirtualBox installation of Kali 2016.2. You can place the ISO image in the directory `ISO/`, or, if the correct ISO cannot be found in the ISO folder, Packer optionally downloads the latest ISO image of Kali.
 
-If the correct ISO cannot be found in the ISO folder, Packer optionally downloads the latest ISO image of the operating system that you want to install (in this case Kali).
+`cd packer && packer build kali-2016.2.json`
 
+Afterwards, the build process will create an OVA file in the directory `packer/output-kali` that can be directly imported into VirtualBox. Note that the root password is `r00tme`, and the SSH server will be enabled on boot: In other words, it's insecure. That's why it's important to harden it using Ansible.
 
+Spin up an Ansible box.
