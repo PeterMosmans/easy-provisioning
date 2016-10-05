@@ -1,0 +1,13 @@
+---
+# file: ansible-server.yml
+- hosts: all
+  become: yes
+  become_method: sudo
+  roles:
+    - role: PeterMosmans.bootstrap
+      tags: bootstrap
+    - role: PeterMosmans.virtualbox-guest
+      tags: virtualbox
+  vars:
+    - hostname: ansible-server
+    - virtualbox_version: 5.1.6

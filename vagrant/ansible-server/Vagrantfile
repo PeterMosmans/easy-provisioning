@@ -1,0 +1,16 @@
+# -*- mode: ruby -*-
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/jessie64"
+  config.vm.box_check_update = false
+  config.vm.define "ansible-server"
+  config.vm.boot_timeout = 600
+  config.ssh.insert_key = false
+  config.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "ansible-server.yml"
+      ansible.install = true
+      ansible.install_mode = "pip"
+      ansible.galaxy_role_file = "requirements.yml"
+  end
+end
+
