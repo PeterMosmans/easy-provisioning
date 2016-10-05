@@ -33,30 +33,44 @@ This repository contains (example) scripts to setup an Ansible server, a Kali Va
   ` git clone https://github.com/PeterMosmans/easy-provisioning`
 
 ### 1: Bootstrap an Ansible server
-End goal: a Vagrantbox containing Ansible, provisioned using Ansible.
+End goal: *a Vagrantbox containing Ansible, provisioned using Ansible.*
 
+##### 1a: Build and provision Ansible on Debian
 `pushd vagrant/ansible-server && VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant up`
 
 This will spin up a Debian box named `bootstrap`, install Ansible on it, and provision it for use with VirtualBox.
+
+
+##### 1b: Package the Ansible server
 Use the following command to package it as a new Vagrantbox, and add it to the local catalog, ready to be used as ansible server:
 `vagrant package ansible-server --output ansible-server.box && vagrant box add ansible-server.box --name ansible-server`
 
-Now, you can spin up the Ansible server box anytime using the command
-`vagrant up` in the `vagrant/ansible-server` directory.
+That's it! Now, you can spin up the Ansible server box anytime using the command
+`vagrant up` in the `vagrant/ansible-server` directory. The directory `/ansible` in the repository is mapped to `/etc/ansible`, so the data persists across Vagrant 'reboots'.
 
 ### 2: Install Kali Linux 2016.2 as a Vagrantbox
-End goal: a Vagrantbox containing Kali Linux 2016.2, provisioned using Ansible
+End goal: *A Vagrantbox containing Kali Linux 2016.2, provisioned using Ansible*
 
+##### 2a: Install Kali
 First, let Packer create an importable VirtualBox installation of Kali 2016.2. You can place the ISO image in the directory `ISO/`, or, if the correct ISO cannot be found in the ISO folder, Packer optionally downloads the latest ISO image of Kali.
 
 `pushd packer && packer build kali-2016.2.json`
 
 Afterwards, the build process will create an OVA file in the directory `output-kali` that can be directly imported into VirtualBox. Note that the root password is `r00tme`, and the SSH server will be enabled on boot: In other words, it's insecure. That's why it's important to harden it using Ansible.
 
+##### 2b: Run Kali as VirtualBox appliance
 Import the box and create a mapping so that port 22 (the SSH server) can be accessed from the Ansible server:
 `MYNAME=kali-2016.2 && MYMEMORY=8192 && MYCPUS=4 && VBoxManage import "output-kali/kali-2016.2.ova" --vsys 0 --vmname "$MYNAME" && VBoxManage modifyvm "$MYNAME" "--memory" "$MYMEMORY" && VBoxManage modifyvm "$MYNAME" "--cpus" "$MYCPUS" && VBoxManage modifyvm "$MYNAME" "--vram" "16" && VBoxManage modifyvm "$MYNAME" "--natpf1" "guestssh,tcp,,221,,22" && VBoxManage startvm "$MYNAME" --type headless`
 
-Spin up an Ansible box (see the first example) and check if you can connect to the box from Ansible. Note that the server can access Kali on the mapped port (221) of **the gateway address**.
-When executed from the Ansible server and using the `r00tme` password, this should print the hostname of the Kali server: `ssh root@$(sudo route -n|awk '/UG/{print $2 }) -p 221 hostname`
+##### 2c: Connect to Kali from the Ansible server
+Spin up an Ansible box (see the first example) and check if you can connect to Kali from Ansible. Note that the server can access Kali on the mapped port (221) of **the gateway address**.
+For this, add the host to `/etc/ansible/hosts` file:
+`echo "kali ansible_host=$(sudo route -n|awk '/UG/{print $2}') ansible_port=221" >> /etc/ansible/hosts`. The `/etc/ansible` folder is mapped to the `ansible` folder of the repository and is therefore persistent across Vagrant reboots/restarts.
+The following command tests whether Kali can be reached from ansible-server:
+`ansible kali -m ping -u root --ask-pass`
 
-Now we're all set for provisioning.
+If this succeeds, the system is all set for provisioning.
+
+##### 2d: Provision Kali
+
+##### 2e: Package Kali as Vagrant box
