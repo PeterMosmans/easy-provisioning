@@ -35,7 +35,7 @@ This repository contains (example) scripts to setup an Ansible server, a Kali Va
 ### 1: Bootstrap an Ansible server
 End goal: a Vagrantbox containing Ansible, provisioned using Ansible.
 
-`cd vagrant/ansible-server && VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant up`
+`pushd vagrant/ansible-server && VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant up`
 
 This will spin up a Debian box named `bootstrap`, install Ansible on it, and provision it for use with VirtualBox.
 Use the following command to package it as a new Vagrantbox, and add it to the local catalog, ready to be used as ansible server:
@@ -49,8 +49,14 @@ End goal: a Vagrantbox containing Kali Linux 2016.2, provisioned using Ansible
 
 First, let Packer create an importable VirtualBox installation of Kali 2016.2. You can place the ISO image in the directory `ISO/`, or, if the correct ISO cannot be found in the ISO folder, Packer optionally downloads the latest ISO image of Kali.
 
-`cd packer && packer build kali-2016.2.json`
+`pushd packer && packer build kali-2016.2.json`
 
-Afterwards, the build process will create an OVA file in the directory `packer/output-kali` that can be directly imported into VirtualBox. Note that the root password is `r00tme`, and the SSH server will be enabled on boot: In other words, it's insecure. That's why it's important to harden it using Ansible.
+Afterwards, the build process will create an OVA file in the directory `output-kali` that can be directly imported into VirtualBox. Note that the root password is `r00tme`, and the SSH server will be enabled on boot: In other words, it's insecure. That's why it's important to harden it using Ansible.
 
-Spin up an Ansible box.
+Import the box and create a mapping so that port 22 (the SSH server) can be accessed from the Ansible server:
+`MYNAME=kali-2016.2 && MYMEMORY=8192 && MYCPUS=4 && VBoxManage import "output-kali/kali-2016.2.ova" --vsys 0 --vmname "$MYNAME" && VBoxManage modifyvm "$MYNAME" "--memory" "$MYMEMORY" && VBoxManage modifyvm "$MYNAME" "--cpus" "$MYCPUS" && VBoxManage modifyvm "$MYNAME" "--vram" "16" && VBoxManage modifyvm "$MYNAME" "--natpf1" "guestssh,tcp,,221,,22" && VBoxManage startvm "$MYNAME" --type headless`
+
+Spin up an Ansible box (see the first example) and check if you can connect to the box from Ansible. Note that the server can access Kali on the mapped port (221) of **the gateway address**.
+When executed from the Ansible server and using the `r00tme` password, this should print the hostname of the Kali server: `ssh root@$(sudo route -n|awk '/UG/{print $2 }) -p 221 hostname`
+
+Now we're all set for provisioning.
