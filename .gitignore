@@ -6,4 +6,5 @@ packer/output-*
 # For built boxes
 *.box
 ## ISO images
-ISO/
+ISO
+ISO/*

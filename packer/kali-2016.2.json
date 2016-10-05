@@ -1,0 +1,41 @@
+{
+  "builders": [{
+    "name": "kali",
+    "type": "virtualbox-iso",
+    "guest_os_type": "Debian_64",
+    "guest_additions_mode": "upload",
+    "guest_additions_path": "VBoxGuestAdditions.iso",
+    "iso_url": "../ISO/kali-linux-2016.2-amd64.iso",
+    "iso_checksum": "25cc6d53a8bd8886fcb468eb4fbb4cdfac895c65",
+    "iso_checksum_type": "sha1",
+    "ssh_username": "root",
+    "ssh_password": "r00tme",
+    "ssh_wait_timeout": "30m",
+    "shutdown_command": "echo 'packer' | shutdown -h now",
+    "vm_name": "kali-2016.2",
+    "format": "ova",
+    "hard_drive_interface": "sata",
+    "disk_size": 20000,
+    "vboxmanage": [
+      ["modifyvm", "{{.Name}}", "--memory", "8192"],
+      ["modifyvm", "{{.Name}}", "--cpus", "4"],
+      ["modifyvm", "{{.Name}}", "--vram", "16"]
+    ],
+    "boot_wait": "5s",
+    "boot_command": [
+      "<esc><wait>",
+      "install ",
+      "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed-2016.2.cfg ",
+      "debian-installer=en_US auto locale=en_US kbd-chooser/method=us <wait>",
+      "netcfg/get_hostname=kali ",
+      "netcfg/get_domain=vagrantup.com ",
+      "fb=false debconf/frontend=noninteractive ",
+      "console-setup/ask_detect=false <wait>",
+      "console-keymaps-at/keymap=us ",
+      "keyboard-configuration/xkb-keymap=us <wait>",
+      "<enter><wait10><wait10><wait10>",
+      "<enter><wait>"
+    ],
+    "http_directory": "http"
+  }]
+}
