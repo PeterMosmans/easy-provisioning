@@ -8,3 +8,6 @@ packer/output-*
 ## ISO images
 ISO
 ISO/*
+## Vagrant
+.vagrant
+.vagrant/*
