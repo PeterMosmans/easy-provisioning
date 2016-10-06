@@ -1,6 +1,6 @@
 # easy-provisioning
 
-*Scripts for putting the words **fun** and **easy** back in provisioning...*
+*Scripts for putting the words* **fun** *and* **easy** *back in provisioning...*
 
 
 I'm a big fan of the DevOps attitude of "cattle" versus "pets": machines should be built in a repeatable, automated and consistent way. If there's something wrong, don't be afraid to replace a sick "cow" instead of trying to revive your "pet".
@@ -14,7 +14,7 @@ This mindset also helps when preparing for demo's and workshops: Usually I need 
 
 **Ansible** is a tool for managing systems and deploying applications, licensed under the GNU General Public License version 3 (my personal favorite).
 
-This repository contains (example) scripts to setup an Ansible server, a Kali Vagrantbox installation, and a demo environment for Pentext.
+This repository contains (example) scripts to setup an Ansible server, a Kali Vagrantbox installation, and a demo environment for Pentext. All commands are executed on the HOST system, unless specified.
 
 ### Prerequisites
 1. Make sure that the following tools are installed, up-to-date and can be executed from the command line.
@@ -42,11 +42,13 @@ This will spin up a Debian box named `bootstrap`, install Ansible on it, and pro
 
 
 ##### 1b: Package the Ansible server
-Use the following command to package it as a new Vagrantbox, and add it to the local catalog, ready to be used as ansible server:
-`vagrant package ansible-server --output ansible-server.box && vagrant box add ansible-server.box --name ansible-server`
+Use the following command to compact the box (to save space), package it as a new Vagrantbox, and add it to the local catalog, ready to be used as Ansible server:
+
+`VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant ssh -c 'sudo /usr/bin/compact_box.sh' && VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant package bootstrap --output ansible-server.box && vagrant box add ansible-server.box --name ansible-server`
 
 That's it! Now, you can spin up the Ansible server box anytime using the command
 `vagrant up` in the `vagrant/ansible-server` directory. The directory `/ansible` in the repository is mapped to `/etc/ansible`, so the data persists across Vagrant 'reboots'.
+Optionally you can remove the `bootstrap` box using `VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant destroy`
 
 ### 2: Install Kali Linux 2016.2 as a Vagrantbox
 End goal: *A Vagrantbox containing Kali Linux 2016.2, provisioned using Ansible*
@@ -56,21 +58,35 @@ First, let Packer create an importable VirtualBox installation of Kali 2016.2. Y
 
 `pushd packer && packer build kali-2016.2.json`
 
-Afterwards, the build process will create an OVA file in the directory `output-kali` that can be directly imported into VirtualBox. Note that the root password is `r00tme`, and the SSH server will be enabled on boot: In other words, it's insecure. That's why it's important to harden it using Ansible.
+The build process will create an OVA file in the directory `output-kali` that can be directly imported into VirtualBox. Note that the root password is `r00tme`, and the SSH server will be enabled on boot: In other words, it's insecure. That's why it's important to harden it using Ansible.
 
 ##### 2b: Run Kali as VirtualBox appliance
-Import the box and create a mapping so that port 22 (the SSH server) can be accessed from the Ansible server:
+Import the box and create a mapping so that port 22 (the SSH server) can be accessed from the Ansible server (note that you can change the allocated memory and processors):
+
 `MYNAME=kali-2016.2 && MYMEMORY=8192 && MYCPUS=4 && VBoxManage import "output-kali/kali-2016.2.ova" --vsys 0 --vmname "$MYNAME" && VBoxManage modifyvm "$MYNAME" "--memory" "$MYMEMORY" && VBoxManage modifyvm "$MYNAME" "--cpus" "$MYCPUS" && VBoxManage modifyvm "$MYNAME" "--vram" "16" && VBoxManage modifyvm "$MYNAME" "--natpf1" "guestssh,tcp,,221,,22" && VBoxManage startvm "$MYNAME" --type headless`
 
 ##### 2c: Connect to Kali from the Ansible server
 Spin up an Ansible box (see the first example) and check if you can connect to Kali from Ansible. Note that the server can access Kali on the mapped port (221) of **the gateway address**.
-For this, add the host to `/etc/ansible/hosts` file:
-`echo "kali ansible_host=$(sudo route -n|awk '/UG/{print $2}') ansible_port=221" >> /etc/ansible/hosts`. The `/etc/ansible` folder is mapped to the `ansible` folder of the repository and is therefore persistent across Vagrant reboots/restarts.
-The following command tests whether Kali can be reached from ansible-server:
+For this, add the host to `/etc/ansible/hosts` file.
+
+First, connect to `ansible-server` by using `vagrant ssh` in 
+
+`echo "kali ansible_host=$(sudo route -n|awk '/UG/{print $2}') ansible_port=221" >> /etc/ansible/hosts`
+The `/etc/ansible` folder is mapped to the `ansible` folder of the repository and is therefore persistent across Vagrant reboots/restarts.
+The following command tests whether Kali can be reached from `ansible-server`:
+
 `ansible kali -m ping -u root --ask-pass`
 
 If this succeeds, the system is all set for provisioning.
 
 ##### 2d: Provision Kali
+
+On `ansible-server`, install the necessary roles on Ansible:
+
+`ansible-galaxy install -r /etc/ansible/requirements.yml`
+
+While on `ansible-server`, run the playbook
+
+`pushd /ansible && ansible-playbook kali.yml kali -u root --ask-pass`
 
 ##### 2e: Package Kali as Vagrant box
