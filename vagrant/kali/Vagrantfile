@@ -1,0 +1,16 @@
+# -*- mode: ruby -*-
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "kali-2016.2"
+  config.vm.box_check_update = false
+  config.vm.provider 'virtualbox' do |v|
+    v.name = "kali-vagrant"
+    v.gui = true
+    v.customize ["modifyvm", :id, "--vram", 256]
+    v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+  end
+  config.vm.define "kali-2016.2"
+  config.vm.boot_timeout = 600
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+end
+
