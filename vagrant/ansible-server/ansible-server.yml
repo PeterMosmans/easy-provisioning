@@ -8,6 +8,23 @@
       tags: bootstrap
     - role: PeterMosmans.virtualbox-guest
       tags: virtualbox
+    - role: PeterMosmans.compact-box
+      tags: compact
   vars:
+    - bootstrap_packages:
+      - aptitude
+      - ca-certificates
+      - curl
+      - git
+      - locate
+      - lsof
+      - ntp
+      - openssl
+      - sshpass
+      - sudo
+      - tmux
+      - ufw
+      - unzip
+      - zsh
     - hostname: ansible-server
     - virtualbox_version: 5.1.6
