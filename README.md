@@ -14,7 +14,7 @@ This mindset also helps when preparing for demo's and workshops: Usually I need 
 
 **Ansible** is a tool for managing systems and deploying applications, licensed under the GNU General Public License version 3 (my personal favorite).
 
-This repository contains (example) scripts to setup an Ansible server, a Kali Vagrantbox installation, and a demo environment for Pentext. All commands are executed on the HOST system, unless specified.
+This repository contains (example) scripts to setup an Ansible server, and Kali Vagrantbox installation, both automatically provisioned using Ansible. All commands are executed on the HOST system, unless specified otherwise.
 
 ### Prerequisites
 1. Make sure that the following tools are installed, up-to-date and can be executed from the command line.
@@ -48,6 +48,7 @@ Use the following command to compact the box (to save space), package it as a ne
 
 That's it! Now, you can spin up the Ansible server box anytime using the command
 `vagrant up` in the `vagrant/ansible-server` directory. The directory `/ansible` in the repository is mapped to `/etc/ansible`, so the data persists across Vagrant 'reboots'.
+
 Optionally you can remove the `bootstrap` box using `VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant destroy`
 
 ### 2: Install Kali Linux 2016.2 as a Vagrantbox
@@ -89,4 +90,17 @@ While on `ansible-server`, run the playbook
 
 `pushd /ansible && ansible-playbook kali.yml kali -u root --ask-pass`
 
+This will provision kali.
+
+Tip: add your own user account and public key in `kali.yml`, and disable root login.
+
+
 ##### 2e: Package Kali as Vagrant box
+
+On the host, compact the virtual machine, package it as box and import it:
+`vagrant package --base kali-2016.2 --output kali-2016.2.box && vagrant box add kali-2016.2.box --name kali-2016.2`
+
+That's it! Now, you can spin up the Ansible server box anytime using the command
+`vagrant up` in the `vagrant/kali` directory (similar to the Ansible server).
+
+You can remove the `.box` files: as soon as they are added to Vagrant they are stored 'internally', on a different location.
