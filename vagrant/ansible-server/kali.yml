@@ -10,6 +10,8 @@
       tags: vagrant
     - role: PeterMosmans.virtualbox-guest
       tags: virtualbox
+    - role: PeterMosmans.compact-box
+      tags: compact
   vars:
     - bootstrap_packages_remove: ""
     - hostname: kali
