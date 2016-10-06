@@ -44,7 +44,7 @@ This will spin up a Debian box named `bootstrap`, install Ansible on it, and pro
 ##### 1b: Package the Ansible server
 Use the following command to compact the box (to save space), package it as a new Vagrantbox, and add it to the local catalog, ready to be used as Ansible server:
 
-`VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant ssh -c 'sudo /usr/bin/compact_box.sh' && VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant package bootstrap --output ansible-server.box && vagrant box add ansible-server.box --name ansible-server`
+`VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant ssh -c 'sudo /usr/bin/compact_box.sh'; VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant package bootstrap --output ansible-server.box && vagrant box add ansible-server.box --name ansible-server`
 
 That's it! Now, you can spin up the Ansible server box anytime using the command
 `vagrant up` in the `vagrant/ansible-server` directory. The directory `/ansible` in the repository is mapped to `/etc/ansible`, so the data persists across Vagrant 'reboots'.
@@ -98,7 +98,7 @@ Tip: add your own user account and public key in `kali.yml`, and disable root lo
 ##### 2e: Package Kali as Vagrant box
 
 On the host, compact the virtual machine, package it as box and import it:
-`vagrant package --base kali-2016.2 --output kali-2016.2.box && vagrant box add kali-2016.2.box --name kali-2016.2`
+`ssh root@127.0.0.1 -p 221 "/usr/bin/compact_box.sh" ; vagrant package --base kali-2016.2 --output kali-2016.2.box && vagrant box add kali-2016.2.box --name kali-2016.2`
 
 That's it! Now, you can spin up the Ansible server box anytime using the command
 `vagrant up` in the `vagrant/kali` directory (similar to the Ansible server).
