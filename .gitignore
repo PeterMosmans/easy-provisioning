@@ -1,5 +1,4 @@
 ## Ansible persistent storage
-ansible/hosts
 ansible/roles/*
 ## Packer
 # Cache objects
