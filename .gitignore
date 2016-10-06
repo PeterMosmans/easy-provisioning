@@ -13,3 +13,4 @@ ISO/*
 ## Vagrant
 .vagrant
 .vagrant/*
+*.retry
