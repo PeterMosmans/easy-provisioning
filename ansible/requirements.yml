@@ -1,0 +1,4 @@
+- src: PeterMosmans.bootstrap
+- src: PeterMosmans.compact-box
+- src: PeterMosmans.provision-vagrant
+- src: PeterMosmans.virtualbox-guest
