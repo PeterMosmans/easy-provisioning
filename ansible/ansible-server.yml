@@ -8,6 +8,8 @@
       tags: bootstrap
     - role: PeterMosmans.virtualbox-guest
       tags: virtualbox
+    - role: PeterMosmans.provision-vagrant
+      tags: vagrant
     - role: PeterMosmans.compact-box
       tags: compact
   vars:
