@@ -17,3 +17,6 @@ ISO/*
 .vagrant
 .vagrant/*
 *.retry
+# (Emacs) (temporary) files
+.#*
+\#*#
