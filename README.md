@@ -66,7 +66,7 @@ The build process will create an OVA file in the directory `output-kali` that ca
 ##### 2b: Run Kali as VirtualBox appliance
 Import the box and create a mapping so that port 22 (the SSH server) can be accessed from the Ansible server (note that you can change the allocated memory and processors):
 
-`MYNAME=kali-2016.2 && MYMEMORY=8192 && MYCPUS=4 && VBoxManage import "output-kali/kali-2016.2.ova" --vsys 0 --vmname "$MYNAME" && VBoxManage modifyvm "$MYNAME" "--memory" "$MYMEMORY" && VBoxManage modifyvm "$MYNAME" "--cpus" "$MYCPUS" && VBoxManage modifyvm "$MYNAME" "--vram" "16" && VBoxManage modifyvm "$MYNAME" "--natpf1" "guestssh,tcp,,221,,22" && VBoxManage startvm "$MYNAME" --type headless`
+`MYNAME=kali-2016.2 && MYMEMORY=4192 && MYVMEM=128 && MYCPUS=2 && VBoxManage import "output-kali/kali-2016.2.ova" --vsys 0 --vmname "$MYNAME" && VBoxManage modifyvm "$MYNAME" "--memory" "$MYMEMORY" && VBoxManage modifyvm "$MYNAME" "--cpus" "$MYCPUS" && VBoxManage modifyvm "$MYNAME" "--vram" "$MYVMEM" && VBoxManage modifyvm "$MYNAME" "--natpf1" "guestssh,tcp,,221,,22" && VBOXManage modifyvm --vrde off && VBoxManage startvm "$MYNAME" --type headless`
 
 ##### 2c: Connect to Kali from the Ansible server
 Spin up an Ansible box (see the first example) and check if you can connect to Kali from Ansible. Note that the server can access Kali on the mapped port (221) of **the gateway address**.
