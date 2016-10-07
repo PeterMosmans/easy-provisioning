@@ -1,0 +1,17 @@
+---
+# file: group_vars/personal.yml
+# for personalized boxes (that don't leave the premises)
+# bootstrap_users:
+#  - name: apenut
+#    comment: "Ape Nut"
+#    groups:
+#      - git
+#      - sudo
+#    shell: "/bin/bash"
+#    ssh_key: https://github.com/your-github-username.keys
+#    repos:
+#      - src: https://github.com/your-github-username/dotfiles
+#        dest: /home/apenut/.dotfiles
+#        version: master
+#    installers:
+#      - command: /home/apenut/.dotfiles/installer.sh
