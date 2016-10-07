@@ -30,7 +30,7 @@ This repository contains (example) scripts to setup an Ansible server, and Kali 
 
 3. Clone this repository
 
-  ` git clone https://github.com/PeterMosmans/easy-provisioning`
+  ` git clone https://github.com/PeterMosmans/easy-provisioning && pushd easy-provisioning`
 
 ### 1: Bootstrap an Ansible server
 End goal: *a Vagrantbox containing Ansible, provisioned using Ansible.*
@@ -38,18 +38,20 @@ End goal: *a Vagrantbox containing Ansible, provisioned using Ansible.*
 ##### 1a: Build and provision Ansible on Debian
 `pushd vagrant/ansible-server && VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant up`
 
-This will spin up a Debian box named `bootstrap`, install Ansible on it, and provision it for use with VirtualBox.
+This will spin up a Debian box named `bootstrap`, install Ansible on it, and provision it for use with VirtualBox. Furthermore it will compact the box, and shut it down afterwards.
 
+Optionally you can add your username, public SSH key and other personal variables in the file `ansible/group_vars/personal.yml`
 
 ##### 1b: Package the Ansible server
-Use the following command to compact the box (to save space), package it as a new Vagrantbox, and add it to the local catalog, ready to be used as Ansible server:
+Use the following command to package it as a new Vagrantbox, and add it to the local catalog, ready to be used as Ansible server:
 
-`VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant ssh -c 'sudo /usr/bin/compact_box.sh'; VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant package bootstrap --output ansible-server.box && vagrant box add ansible-server.box --name ansible-server`
+`VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant package bootstrap --output ansible-server.box && vagrant box add ansible-server.box --name ansible-server`
+
 
 That's it! Now, you can spin up the Ansible server box anytime using the command
 `vagrant up` in the `vagrant/ansible-server` directory. The directory `/ansible` in the repository is mapped to `/etc/ansible`, so the data persists across Vagrant 'reboots'.
 
-Optionally you can remove the `bootstrap` box using `VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant destroy`
+You can remove the `bootstrap` box using `VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant destroy`
 
 ### 2: Install Kali Linux 2016.2 as a Vagrantbox
 End goal: *A Vagrantbox containing Kali Linux 2016.2, provisioned using Ansible*
@@ -91,8 +93,6 @@ While on `ansible-server`, run the playbook
 `pushd /ansible && ansible-playbook kali.yml kali -u root --ask-pass`
 
 This will provision kali.
-
-Tip: add your own user account and public key in `kali.yml`, and disable root login.
 
 
 ##### 2e: Package Kali as Vagrant box
