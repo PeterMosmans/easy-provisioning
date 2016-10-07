@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider 'virtualbox' do |v|
     v.name = "kali-vagrant"
     v.gui = true
-    v.customize ["modifyvm", :id, "--vram", 256]
+    v.customize ["modifyvm", :id, "--vram", 128]
     v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
   end
   config.vm.define "kali-2016.2"
