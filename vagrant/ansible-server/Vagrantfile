@@ -9,6 +9,7 @@ Vagrant.configure("2") do |config|
   end
   # This allows you to configure fresh Vagrant instances
   config.ssh.insert_key = false
+  config.ssh.forward_agent = true
   config.vm.boot_timeout = 600
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.synced_folder ".", "/ansible", owner: "vagrant", group: "vagrant", :mount_options => ["fmode=600"]
