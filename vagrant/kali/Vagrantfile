@@ -3,11 +3,18 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "kali-2016.2"
   config.vm.box_check_update = false
+  # Do VirtualBox specific configuration / optimization (modify where necessary)
   config.vm.provider 'virtualbox' do |v|
-    v.name = "kali-vagrant"
-    v.gui = true
-    v.customize ["modifyvm", :id, "--vram", 128]
     v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+    v.customize ["modifyvm", :id, "--cpus", 1]
+    v.customize ["modifyvm", :id, "--memory", 4096]
+    v.customize ["modifyvm", :id, "--rtcuseutc", "on"]
+    v.customize ["modifyvm", :id, "--vram", 128]
+    v.customize ["storagectl", :id, "--name", "SATA Controller", "--hostiocache", "on"]
+    v.customize ['modifyvm', :id, '--nictype1', 'virtio']
+    v.gui = true
+    # Name this specific instance (note: this prevents multiple instances)
+    # v.name = "kali-vagrant"
   end
   config.vm.define "kali-2016.2"
   config.vm.boot_timeout = 600
