@@ -1,0 +1,41 @@
+{
+    "builders": [{
+        "name": "jessie-32",
+        "type": "virtualbox-iso",
+        "guest_os_type": "Debian",
+        "guest_additions_mode": "upload",
+        "guest_additions_path": "VBoxGuestAdditions.iso",
+        "iso_urls": [
+            "../ISO/debian-8.6.0-i386-netinst.iso",
+            "http://cdimage.debian.org/debian-cd/8.6.0/i386/iso-cd/debian-8.6.0-i386-netinst.iso"
+        ],
+        "iso_checksum": "a9de6e4375eb752edd7c36e0e03cb2c55e8187631589b6dbf137c77452881292",
+        "iso_checksum_type": "sha256",
+        "ssh_password": "vagrant",
+        "ssh_username": "root",
+        "ssh_wait_timeout": "30m", 
+        "shutdown_command": "/sbin/halt -p",
+        "vm_name": "jessie-32",
+        "format": "ova",
+        "hard_drive_interface": "sata",
+        "disk_size": "10140",
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--audio", "none"],
+            ["modifyvm", "{{.Name}}", "--clipboard", "disabled"],
+            ["modifyvm", "{{.Name}}", "--cpus", "1"],
+            ["modifyvm", "{{.Name}}", "--memory", "512"],
+            ["modifyvm", "{{.Name}}", "--nictype1", "virtio"]
+            ["modifyvm", "{{.Name}}", "--rtcuseutc", "on"],
+            ["modifyvm", "{{.Name}}", "--vram", "16"],
+            ["modifyvm", "{{.Name}}", "--vrde", "off"],
+            ["storagectl", "{{.Name}}", "--name", "SATA Controller", "--hostiocache", "on"],
+           ],
+        "boot_wait": "5s",
+    "boot_command": [
+        "<esc><wait>",
+        "auto <wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/jessie.cfg <wait>",
+        "keyboard-configuration/xkb-keymap=us <enter> <wait>"],
+        "http_directory": "http"
+    }]
+}
