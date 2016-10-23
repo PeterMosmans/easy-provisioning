@@ -13,7 +13,7 @@
         "iso_checksum_type": "sha256",
         "ssh_password": "vagrant",
         "ssh_username": "root",
-        "ssh_wait_timeout": "30m", 
+        "ssh_wait_timeout": "30m",
         "shutdown_command": "/sbin/halt -p",
         "vm_name": "jessie-32",
         "format": "ova",
