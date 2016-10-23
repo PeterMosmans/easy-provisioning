@@ -1,3 +1,4 @@
+- src: PeterMosmans.apache2
 - src: PeterMosmans.bootstrap
 - src: PeterMosmans.compact-box
 - src: PeterMosmans.provision-vagrant
