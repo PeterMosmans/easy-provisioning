@@ -24,11 +24,11 @@
             ["modifyvm", "{{.Name}}", "--clipboard", "disabled"],
             ["modifyvm", "{{.Name}}", "--cpus", "1"],
             ["modifyvm", "{{.Name}}", "--memory", "512"],
-            ["modifyvm", "{{.Name}}", "--nictype1", "virtio"]
             ["modifyvm", "{{.Name}}", "--rtcuseutc", "on"],
             ["modifyvm", "{{.Name}}", "--vram", "16"],
             ["modifyvm", "{{.Name}}", "--vrde", "off"],
-            ["storagectl", "{{.Name}}", "--name", "SATA Controller", "--hostiocache", "on"],
+            ["modifyvm", "{{.Name}}", "--nictype1", "82545EM"],
+            ["storagectl", "{{.Name}}", "--name", "SATA Controller", "--hostiocache", "on"]
            ],
         "boot_wait": "5s",
     "boot_command": [
