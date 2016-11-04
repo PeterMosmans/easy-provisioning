@@ -47,11 +47,15 @@ Use the following command to package it as a new Vagrantbox, and add it to the l
 
 `VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant package bootstrap --output ansible-server.box && vagrant box add ansible-server.box --name ansible-server`
 
+Alternatively, you can add it to the local catalog versioned. For this, you need to have `openssl` installed, as it computes a checksum of the boxfile:
+
+`VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant package bootstrap --output ansible-server.box && sed -i s/CHECKSUM/$(openssl sha1 ansible-server.box|cut -d ' ' -f2)/g ansible-server.json && sed -i s/VERSION/$(date +%Y%m%d.0.0)/g ansible-server.json && vagrant box add ansible-server.json`
+
 
 That's it! Now, you can spin up the Ansible server box anytime using the command
-`vagrant up` in the `vagrant/ansible-server` directory. The directory `/ansible` in the repository is mapped to `/etc/ansible`, so the data persists across Vagrant 'reboots'.
+`vagrant up` in the `vagrant/ansible-server` directory. The directory `/ansible` in the repository is mapped to `/etc/ansible`, so the Ansible configuration (including roles and playbooks) persists across Vagrant 'reboots'.
 
-You can remove the `bootstrap` box using `VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant destroy`
+You can remove the `bootstrap` box using `VAGRANT_VAGRANTFILE=Vagrantfile.bootstrap vagrant destroy`. The `ansible-server.box` can removed as well, when it has been added to the local catalog.
 
 ### 2: Install Kali Linux 2016.2 as a Vagrantbox
 End goal: *A Vagrantbox containing Kali Linux 2016.2, provisioned using Ansible*
@@ -74,9 +78,11 @@ For this, add the host to `/etc/ansible/hosts` file.
 
 First, connect to `ansible-server` by using `vagrant ssh` in 
 
-`echo "kali ansible_host=$(sudo route -n|awk '/UG/{print $2}') ansible_port=221" >> /etc/ansible/hosts`
+`echo "kali ansible_host=$(sudo route -n|awk '/UG/{print $2}') ansible_port=221 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'">> /etc/ansible/hosts`
 The `/etc/ansible` folder is mapped to the `ansible` folder of the repository and is therefore persistent across Vagrant reboots/restarts.
+First make sure that the hostkey of kali is added to the vagrant server
 The following command tests whether Kali can be reached from `ansible-server`:
+
 
 `ansible kali -m ping -u root --ask-pass`
 
