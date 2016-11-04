@@ -1,0 +1,13 @@
+{
+    "name" : "ansible-server",
+    "description" : "Ansible server",
+    "versions" :[{
+        "version": "VERSION",
+        "providers": [{
+            "name": "virtualbox",
+            "url": "file://ansible-server.box",
+            "checksum_type": "sha1",
+            "checksum": "CHECKSUM"
+        }]
+    }]
+}
