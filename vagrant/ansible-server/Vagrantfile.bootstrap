@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
     ansible.install = true
     ansible.install_mode = "pip"
     ansible.limit = "all"
-    ansible.playbook = "ansible-server.yml"
+    ansible.playbook = "playbooks/ansible-server.yml"
   end
   # Note that this should ONLY be run if rsync is used to mount /vagrant
   # Otherwise, this could remove the mounted host directory
