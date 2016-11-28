@@ -1,0 +1,37 @@
+---
+# file: kali.yml
+- hosts: kali
+  become: yes
+  become_method: sudo
+  roles:
+    - role: PeterMosmans.bootstrap
+      tags: bootstrap
+    - role: PeterMosmans.provision-vagrant
+      tags: vagrant
+    - role: PeterMosmans.virtualbox-guest
+      tags: virtualbox
+    - role: PeterMosmans.compact-box
+      tags: compact
+  vars:
+    - bootstrap_packages_remove: ""
+    - hostname: "kali"
+    - virtualbox_version: 5.1.10
+    - virtualbox_x11: true
+    - unnecessary_packages: ""
+    - bootstrap_directories:
+        - path: /var/git
+          mode: "2770"
+          owner: root
+          group: git
+    - bootstrap_pip_packages:
+        # for analyze_hosts.py
+        - python-nmap
+        - requests
+        - python-wappalyzer
+    - bootstrap_git_repositories:
+        - repo: https://github.com/PeterMosmans/security-scripts
+          dest: /var/git/security-scripts
+        - repo: https://github.com/drwetter/testssl.sh
+          dest: /var/git/testssl.sh
+    - bootstrap_ufw_tcp_allow:
+        - 22
