@@ -65,12 +65,12 @@ First, let Packer create an importable VirtualBox installation of Kali 2016.2. Y
 
 `pushd packer && packer build kali-2016.2.json`
 
-The build process will create an OVA file in the directory `output-kali` that can be directly imported into VirtualBox. Note that the root password is `r00tme`, and the SSH server will be enabled on boot: In other words, it's insecure. That's why it's important to harden it using Ansible.
+The build process will create an OVA file in the directory `output-kali` that can be directly imported into VirtualBox. Note that the root password is `r00tme`, the SSH server will be enabled on boot and allows root to log in: In other words, it's insecure. That's why it's important to harden it using Ansible.
 
 ##### 2b: Run Kali as VirtualBox appliance
-Import the box and create a mapping so that port 22 (the SSH server) can be accessed from the Ansible server (note that you can change the allocated memory and processors):
+Import the box and create a mapping so that port 22 (the SSH server) can be accessed from the Ansible server:
 
-`MYNAME=kali-2016.2 && MYMEMORY=4192 && MYVMEM=128 && MYCPUS=2 && VBoxManage import "output-kali/kali-2016.2.ova" --vsys 0 --vmname "$MYNAME" && VBoxManage modifyvm "$MYNAME" "--memory" "$MYMEMORY" && VBoxManage modifyvm "$MYNAME" "--cpus" "$MYCPUS" && VBoxManage modifyvm "$MYNAME" "--vram" "$MYVMEM" && VBoxManage modifyvm "$MYNAME" "--natpf1" "guestssh,tcp,,221,,22" && VBOXManage modifyvm --vrde off && VBoxManage startvm "$MYNAME" --type headless`
+`MYNAME=kali-2016.2 && VBoxManage import "output-kali/kali-2016.2.ova" --vsys 0 --vmname "$MYNAME" && VBoxManage modifyvm "$MYNAME" "--natpf1" "guestssh,tcp,,221,,22" && VBoxManage startvm "$MYNAME"`
 
 ##### 2c: Connect to Kali from the Ansible server
 Spin up an Ansible box (see the first example) and check if you can connect to Kali from Ansible. Note that the server can access Kali on the mapped port (221) of **the gateway address**.
@@ -96,15 +96,15 @@ On `ansible-server`, install the necessary roles on Ansible:
 
 While on `ansible-server`, run the playbook
 
-`pushd /ansible && ansible-playbook kali.yml kali -u root --ask-pass`
+`pushd /playbooks && ansible-playbook kali.yml kali -u root --ask-pass`
 
 This will provision kali.
 
 
 ##### 2e: Package Kali as Vagrant box
 
-On the host, compact the virtual machine, package it as box and import it:
-`ssh root@127.0.0.1 -p 221 "/usr/bin/compact_box.sh" ; vagrant package --base kali-2016.2 --output kali-2016.2.box && vagrant box add kali-2016.2.box --name kali-2016.2`
+On the host, compact the virtual machine, package it as versioned box and import it:
+`MYNAME=kali-2016.2 && ssh root@127.0.0.1 -p 221 "/usr/bin/compact_box.sh" ; vagrant package --base ${NAME} --output ${MYNAME}.box && sed -i s/CHECKSUM/$(openssl sha1 ${MYNAME}.box|cut -d ' ' -f2)/g ${MYNAME}.json && sed -i s/VERSION/$(date +%Y%m%d.0.0)/g ${MYNAME}.json && vagrant box add ${MYNAME}.json`
 
 That's it! Now, you can spin up the Ansible server box anytime using the command
 `vagrant up` in the `vagrant/kali` directory (similar to the Ansible server).
