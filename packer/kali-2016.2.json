@@ -1,16 +1,16 @@
 {
   "builders": [{
-    "name": "kali",
+    "name": "kali-2016.2",
     "type": "virtualbox-iso",
     "guest_os_type": "Debian_64",
     "guest_additions_mode": "upload",
     "guest_additions_path": "VBoxGuestAdditions.iso",
     "headless": true,
     "iso_urls": [
-      "../ISO/kali-linux-2016.2-amd64.iso",
-      "http://cdimage.kali.org/kali-2016.2/kali-linux-2016.2-amd64.iso"
+      "../ISO/kali-linux-2016-W47-amd64.iso",
+      "http://cdimage.kali.org/kali-images/kali-weekly/kali-linux-2016-W47-amd64.iso"
     ],
-    "iso_checksum": "25cc6d53a8bd8886fcb468eb4fbb4cdfac895c65",
+    "iso_checksum": "67817baa5ffd213062a25bc082213b505d449d6e",
     "iso_checksum_type": "sha1",
     "ssh_username": "root",
     "ssh_password": "r00tme",
@@ -22,10 +22,14 @@
     "disk_size": 20000,
     "vboxmanage": [
       ["modifyvm", "{{.Name}}", "--memory", "8192"],
-      ["modifyvm", "{{.Name}}", "--cpus", "4"],
-      ["modifyvm", "{{.Name}}", "--vram", "16"]
+      ["modifyvm", "{{.Name}}", "--cpus", "2"],
+      ["modifyvm", "{{.Name}}", "--vram", "128"],
+      ["modifyvm", "{{.Name}}", "--clipboard", "bidirectional"],
+      ["modifyvm", "{{.Name}}", "--rtcuseutc", "on"],
+      ["modifyvm", "{{.Name}}", "--vrde", "off"],
+      ["storagectl", "{{.Name}}", "--name", "SATA Controller", "--hostiocache", "on"]
     ],
-    "boot_wait": "5s",
+    "boot_wait": "10s",
     "boot_command": [
       "<esc><wait>",
       "install ",
