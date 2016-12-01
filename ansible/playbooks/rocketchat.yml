@@ -1,0 +1,28 @@
+---
+# file: gitlab.yml
+- hosts: all
+  become: yes
+  become_method: sudo
+  roles:
+    - role: PeterMosmans.bootstrap
+      tags: bootstrap
+    - role: PeterMosmans.provision-vagrant
+      tags: vagrant
+    - role: PeterMosmans.virtualbox-guest
+      tags: virtualbox
+    - role: PeterMosmans.docbuilder
+      tags: docbuilder
+    - role: RocketChat.Server
+      tags: rocketchat
+    - role: PeterMosmans.compact-box
+      tags: compact
+  vars:
+    - bootstrap_ufw_tcp_allow:
+        - 22
+        - 80
+        - 443
+    - hostname: "rocketchat"
+    - rocket_chat_automatic_upgrades: false
+    - rocket_chat_service_host: "rocketchat.local"
+    - rocket_chat_tarball_sha256sum: "7c9f1054e71593b2e450002ff8a4e83231acfdfabc76e70eb7865bc88655668a"
+    - virtualbox_version: 5.1.10
