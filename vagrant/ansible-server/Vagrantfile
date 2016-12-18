@@ -1,5 +1,14 @@
 # -*- mode: ruby -*-
 
+settings_file = '../../ansible/group_vars/personal.yml'
+
+require 'yaml'
+if File.file?(settings_file)
+  settings = YAML.load_file settings_file
+else
+  settings = ''
+end
+
 Vagrant.configure("2") do |config|
   config.vm.box = "ansible-server"
   config.vm.box_check_update = false
@@ -18,4 +27,12 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "../../ansible/playbooks", "/playbooks", owner: "vagrant", group: "vagrant", :mount_options => ["fmode=664"]
   # For persistent Ansible roles and settings, mount ansible as /etc/ansible
   config.vm.synced_folder "../../ansible", "/etc/ansible", owner: "root", group: "vagrant", :mount_options => ["fmode=664"]
+  if !settings['vagrant_private'].nil?
+      # Mount local private folder
+    config.vm.synced_folder settings['vagrant_private'], "/private"
+  end
+  if !settings['vagrant_backup'].nil?
+      # Mount local backup folder
+    config.vm.synced_folder settings['vagrant_backup'], "/backup"
+  end
 end

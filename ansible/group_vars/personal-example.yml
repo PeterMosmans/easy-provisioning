@@ -15,3 +15,6 @@ bootstrap_users:
        version: master
    installers:
      - command: /home/apenut/.dotfiles/installer.sh
+# Will be used by the ansible-server Vagrant box
+vagrant_private: /usr/myuser/myprivate/folder
+vagrant_backup: /var/backup
