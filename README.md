@@ -61,7 +61,7 @@ You can remove the `bootstrap` box using `VAGRANT_VAGRANTFILE=Vagrantfile.bootst
 End goal: *A Vagrantbox containing Kali Linux 2016.2, provisioned using Ansible*
 
 ##### 2a: Install Kali
-First, let Packer create an importable VirtualBox installation of Kali 2016.2. You can place the ISO image in the directory `ISO/`, or, if the correct ISO cannot be found in the ISO folder, Packer optionally downloads the latest ISO image of Kali.
+First, let Packer create a VirtualBox installation of Kali 2016.2 that can be imported. You can place the ISO image in the directory `ISO/`, or, if the correct ISO cannot be found in the ISO folder, Packer optionally downloads the latest ISO image of Kali.
 
 `pushd packer && packer build kali-2016.2.json`
 
@@ -70,7 +70,7 @@ The build process will create an OVA file in the directory `output-kali` that ca
 ##### 2b: Run Kali as VirtualBox appliance
 Import the box and create a mapping so that port 22 (the SSH server) can be accessed from the Ansible server:
 
-`MYNAME=kali-2016.2 && VBoxManage import "output-kali/kali-2016.2.ova" --vsys 0 --vmname "$MYNAME" && VBoxManage modifyvm "$MYNAME" "--natpf1" "guestssh,tcp,,221,,22" && VBoxManage startvm "$MYNAME"`
+`MYNAME=kali-2016.2 && VBoxManage import "output-kali-2016.2/kali-2016.2.ova" --vsys 0 --vmname "$MYNAME" && VBoxManage modifyvm "$MYNAME" "--natpf1" "guestssh,tcp,,221,,22" && VBoxManage startvm "$MYNAME"`
 
 ##### 2c: Connect to Kali from the Ansible server
 Spin up an Ansible box (see the first example) and check if you can connect to Kali from Ansible. Note that the server can access Kali on the mapped port (221) of **the gateway address**.
