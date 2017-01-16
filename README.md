@@ -96,7 +96,7 @@ On `ansible-server`, install the necessary roles on Ansible:
 
 While on `ansible-server`, run the playbook
 
-`pushd /playbooks && ansible-playbook kali.yml kali -u root --ask-pass`
+`pushd /playbooks && ansible-playbook kali.yml -u root --ask-pass`
 
 This will provision kali.
 
