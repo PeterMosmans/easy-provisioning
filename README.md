@@ -110,3 +110,9 @@ That's it! Now, you can spin up the Ansible server box anytime using the command
 `vagrant up` in the `vagrant/kali` directory (similar to the Ansible server).
 
 You can remove the `.box` files: as soon as they are added to Vagrant they are stored 'internally', on a different location.
+
+# Packer templates and preseed files
+## Kali 2016.2
+The template `kali-2016.2` will install the latest version of Kali 2016.2, and prepare it for use with other provisioning tools. It uses the `kali-packer.cfg` preseed file, which is the vanilla preseed file for Kali 2016.2, with a minimal addition in order to use it with Packer.
+
+
