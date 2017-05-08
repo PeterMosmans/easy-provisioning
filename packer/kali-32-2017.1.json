@@ -1,0 +1,50 @@
+{
+    "builders": [{
+        "name": "kali-32-2017.1",
+        "type": "virtualbox-iso",
+        "guest_os_type": "Debian",
+        "guest_additions_mode": "upload",
+        "guest_additions_path": "VBoxGuestAdditions.iso",
+        "headless": true,
+        "iso_urls": [
+            "../ISO/kali-linux-2017.1-i386.iso",
+            "http://cdimage.kali.org/kali-2017.1/kali-linux-2017.1-i386.iso"
+        ],
+        "iso_checksum": "501b3747e5ac7c698217392fe49ec21dacee277404500fc49d4a0ee82625aabe",
+        "iso_checksum_type": "sha256",
+        "ssh_username": "root",
+        "ssh_password": "r00tme",
+        "ssh_wait_timeout": "30m",
+        "shutdown_command": "echo 'packer' | shutdown -h now",
+        "vm_name": "kali-32-2017.1",
+        "format": "ova",
+        "hard_drive_interface": "sata",
+        "disk_size": 20000,
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--memory", "4096"],
+            ["modifyvm", "{{.Name}}", "--cpus", "2"],
+            ["modifyvm", "{{.Name}}", "--vram", "128"],
+            ["modifyvm", "{{.Name}}", "--clipboard", "bidirectional"],
+            ["modifyvm", "{{.Name}}", "--rtcuseutc", "on"],
+            ["modifyvm", "{{.Name}}", "--vrde", "off"],
+            ["storagectl", "{{.Name}}", "--name", "SATA Controller", "--hostiocache", "on"]
+        ],
+        "boot_wait": "10s",
+        "boot_command": [
+            "<esc><wait>",
+            "install ",
+            "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed-2017.1.cfg ",
+            "debian-installer=en_US auto locale=en_US kbd-chooser/method=us <wait>",
+            "netcfg/get_hostname=kali ",
+            "netcfg/get_domain=vagrantup.com ",
+            "fb=false debconf/frontend=noninteractive ",
+            "console-setup/ask_detect=false <wait>",
+            "console-keymaps-at/keymap=us ",
+            "keyboard-configuration/xkb-keymap=us <wait>",
+            "<enter><wait10><wait10><wait10>",
+            "<enter><wait>"
+        ],
+        "http_directory": "http",
+        "post_shutdown_delay": "30s"
+    }]
+}
