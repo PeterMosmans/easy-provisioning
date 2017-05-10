@@ -27,7 +27,7 @@
             ["modifyvm", "{{.Name}}", "--rtcuseutc", "on"],
             ["modifyvm", "{{.Name}}", "--vram", "16"],
             ["modifyvm", "{{.Name}}", "--vrde", "off"],
-            ["modifyvm", "{{.Name}}", "--nictype1", "82545EM"],
+            ["modifyvm", "{{.Name}}", "--nictype1", "virtio"],
             ["storagectl", "{{.Name}}", "--name", "SATA Controller", "--hostiocache", "on"]
            ],
         "boot_wait": "5s",
