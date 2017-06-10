@@ -6,27 +6,31 @@
   roles:
     - role: PeterMosmans.bootstrap
       tags: bootstrap
-    - role: PeterMosmans.virtualbox-guest
-      tags: virtualbox
     - role: PeterMosmans.provision-vagrant
       tags: vagrant
+    - role: PeterMosmans.virtualbox-guest
+      tags: virtualbox
     - role: PeterMosmans.compact-box
       tags: compact
   vars:
-    - bootstrap_packages:
-      - aptitude
-      - ca-certificates
-      - curl
-      - git
-      - locate
-      - lsof
-      - ntp
-      - openssl
-      - sshpass
+    hostname: ansible-server
+    virtualbox_version: 5.1.22
+    bootstrap_commands: "chown vagrant:vagrant /home/vagrant/.ssh/config"
+    bootstrap_packages:
       - sudo
-      - tmux
       - ufw
-      - unzip
-      - zsh
-    - hostname: ansible-server
-    - virtualbox_version: 5.1.8
+      # Ansible:
+      # - build-essential # unsure whether this is necessary
+      - gcc
+      - libffi-dev
+      - libssl-dev
+      - python-dev
+      - python-pip
+    bootstrap_pip_packages:
+      - ansible
+    unnecessary_packages:
+      # Remove Ansible-specific build stuff
+      - gcc
+      - libffi-dev
+      - libssl-dev
+      - python-dev
