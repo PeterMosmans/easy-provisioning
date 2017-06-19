@@ -1,0 +1,42 @@
+{
+    "builders": [{
+        "name": "stretch-amd64",
+        "type": "virtualbox-iso",
+        "guest_os_type": "Debian_64",
+        "guest_additions_mode": "upload",
+        "guest_additions_path": "VBoxGuestAdditions.iso",
+        "iso_urls": [
+            "../ISO/debian-9.0.0-amd64-netinst.iso",
+            "http://cdimage.debian.org/debian-cd/9.0.0/amd64/iso-cd/debian-9.0.0-amd64-netinst.iso"
+        ],
+        "iso_checksum": "9d98f339016dc2a3998881949a8f0678baede26b5106f18ef1168d7e13606773",
+        "iso_checksum_type": "sha256",
+        "ssh_password": "vagrant",
+        "ssh_username": "root",
+        "ssh_wait_timeout": "30m",
+        "shutdown_command": "/sbin/halt -p",
+        "vm_name": "stretch-amd64",
+        "format": "ova",
+        "hard_drive_interface": "sata",
+        "disk_size": "10140",
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--audio", "none"],
+            ["modifyvm", "{{.Name}}", "--clipboard", "disabled"],
+            ["modifyvm", "{{.Name}}", "--cpus", "1"],
+            ["modifyvm", "{{.Name}}", "--memory", "512"],
+            ["modifyvm", "{{.Name}}", "--rtcuseutc", "on"],
+            ["modifyvm", "{{.Name}}", "--vram", "16"],
+            ["modifyvm", "{{.Name}}", "--vrde", "off"],
+            ["modifyvm", "{{.Name}}", "--nictype1", "virtio"],
+            ["storagectl", "{{.Name}}", "--name", "SATA Controller", "--hostiocache", "on"]
+           ],
+        "boot_wait": "5s",
+        "post_shutdown_delay": "30s",
+        "boot_command": [
+        "<esc><wait>",
+        "auto <wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/stretch.cfg <wait>",
+        "keyboard-configuration/xkb-keymap=us <enter> <wait>"],
+        "http_directory": "http"
+    }]
+}
